@@ -45,7 +45,7 @@ def create_tf_example(filename, encoded_jpeg, annotations):
 
 def download_tfr(filepath, temp_dir):
     """
-    download a single tf record 
+    download a single tf record (.tfrecord)
 
     args:
         - filepath [str]: path to the tf record file
@@ -109,10 +109,8 @@ def download_and_process(filename, temp_dir, data_dir):
 
 if __name__ == "__main__": 
     parser = argparse.ArgumentParser(description='Download and process tf files')
-    parser.add_argument('--data_dir', required=True,
-                        help='processed data directory')
-    parser.add_argument('--temp_dir', required=True,
-                        help='raw data directory')
+    parser.add_argument('--data_dir', required=True, help='processed data directory')
+    parser.add_argument('--temp_dir', required=True, help='raw data directory')
     args = parser.parse_args()
     logger = get_module_logger(__name__)
     # open the filenames file
