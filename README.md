@@ -146,5 +146,13 @@ This section should detail the results of the reference experiment. It should in
 #### Improve on the reference
 This section should highlight the different strategies you adopted to improve your model. It should contain relevant figures and details of your findings.
 
-### Google colab setup
-[check accepted answer to the question](https://stackoverflow.com/questions/61934198/modulenotfounderror-no-module-named-nets-on-google-colab)
+## Google colab setup
+
+Add the following lines when working on tensorflow 1 as it's the case in this project (only works in google colab):
+```
+%tensorflow_version 1.x
+!python colab_setup.py
+import os
+os.environ['PYTHONPATH'] += ':/content/models/research/:/content/models/research/slim/'
+```
+**Note:** The `colab_setup.py` file is based on the following [reference](https://stackoverflow.com/questions/61934198/modulenotfounderror-no-module-named-nets-on-google-colab)
