@@ -9,6 +9,8 @@ from PIL import Image
 from psutil import cpu_count
 
 from utils import *
+import cv2
+import numpy as np
 
 
 def create_tf_example(filename, encoded_jpeg, annotations):
@@ -25,7 +27,10 @@ def create_tf_example(filename, encoded_jpeg, annotations):
     """
 
     # TODO: Implement function to convert the data
-
+    decoded_image = cv2.imdecode(np.frombuffer(encoded_jpeg, np.uint8), -1)
+    height = decoded_image.shape[0]
+    width = decoded_image.shape[1]
+    
     tf_example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': int64_feature(height),
         'image/width': int64_feature(width),
