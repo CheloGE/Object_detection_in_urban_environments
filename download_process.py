@@ -11,6 +11,7 @@ from psutil import cpu_count
 from utils import *
 import cv2
 import numpy as np
+from object_detection.utils import dataset_util, label_map_util
 
 
 def create_tf_example(filename, encoded_jpeg, annotations):
@@ -27,9 +28,34 @@ def create_tf_example(filename, encoded_jpeg, annotations):
     """
 
     # TODO: Implement function to convert the data
+    logger.info(f'new image processing...')
     decoded_image = cv2.imdecode(np.frombuffer(encoded_jpeg, np.uint8), -1)
     height = decoded_image.shape[0]
     width = decoded_image.shape[1]
+    filename = filename.encode('utf-8')
+    image_format=b'jpeg'
+    
+    # get labels classes {'vehicle': 1, 'pedestrian': 2, 'cyclist': 4}
+    reverse_label_map_dict = label_map_util.get_label_map_dict(
+        label_map_util.load_labelmap("label_map.pbtxt"))
+    label_map_dict = dict(map(reversed, reverse_label_map_dict.items()))
+
+    # Initialize size of arrays with empty values
+    classes_text = np.empty(len(annotations), dtype=('S25'))
+    classes = np.empty(len(annotations), dtype=('i8'))
+    xmins = np.zeros(len(annotations))
+    xmaxs = np.zeros(len(annotations))
+    ymins = np.zeros(len(annotations))
+    ymaxs = np.zeros(len(annotations))
+    for i, curr_annotation in enumerate(annotations):
+        half_width = curr_annotation.box.length/2.0
+        half_height = curr_annotation.box.width/2.0
+        xmins[i]= curr_annotation.box.center_x - half_width
+        xmaxs[i]= curr_annotation.box.center_x + half_width
+        ymins[i]= curr_annotation.box.center_x - half_height
+        ymaxs[i]= curr_annotation.box.center_x + half_height
+        classes_text[i] = label_map_dict[curr_annotation.type].encode('utf-8') 
+        classes[i] = curr_annotation.type
     
     tf_example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': int64_feature(height),
