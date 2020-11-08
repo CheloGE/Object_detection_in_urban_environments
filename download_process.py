@@ -28,13 +28,12 @@ def create_tf_example(filename, encoded_jpeg, annotations):
     """
 
     # TODO: Implement function to convert the data
-    logger.info(f'new image processing...')
     decoded_image = cv2.imdecode(np.frombuffer(encoded_jpeg, np.uint8), -1)
     height = decoded_image.shape[0]
     width = decoded_image.shape[1]
     filename = filename.encode('utf-8')
-    image_format=b'jpeg'
-    
+    image_format = b'jpeg'
+
     # get labels classes {'vehicle': 1, 'pedestrian': 2, 'cyclist': 4}
     reverse_label_map_dict = label_map_util.get_label_map_dict(
         label_map_util.load_labelmap("label_map.pbtxt"))
@@ -50,13 +49,13 @@ def create_tf_example(filename, encoded_jpeg, annotations):
     for i, curr_annotation in enumerate(annotations):
         half_width = curr_annotation.box.length/2.0
         half_height = curr_annotation.box.width/2.0
-        xmins[i]= curr_annotation.box.center_x - half_width
-        xmaxs[i]= curr_annotation.box.center_x + half_width
-        ymins[i]= curr_annotation.box.center_x - half_height
-        ymaxs[i]= curr_annotation.box.center_x + half_height
-        classes_text[i] = label_map_dict[curr_annotation.type].encode('utf-8') 
+        xmins[i] = curr_annotation.box.center_x - half_width
+        xmaxs[i] = curr_annotation.box.center_x + half_width
+        ymins[i] = curr_annotation.box.center_y - half_height
+        ymaxs[i] = curr_annotation.box.center_y + half_height
+        classes_text[i] = label_map_dict[curr_annotation.type].encode('utf-8')
         classes[i] = curr_annotation.type
-    
+
     tf_example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': int64_feature(height),
         'image/width': int64_feature(width),
@@ -94,8 +93,8 @@ def download_tfr(filepath, temp_dir):
     logger.info(f'Downloading {filepath}')
     res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if res.returncode != 0:
-        logger.error(f'Could not download file {filepath}') 
-    
+        logger.error(f'Could not download file {filepath}')
+
     filename = os.path.basename(filepath)
     local_path = os.path.join(dest, filename)
     return local_path
@@ -138,24 +137,25 @@ def download_and_process(filename, temp_dir, data_dir):
     os.remove(local_path)
 
 
-if __name__ == "__main__": 
-    parser = argparse.ArgumentParser(description='Download and process tf files')
-    parser.add_argument('--data_dir', required=True, help='processed data directory')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description='Download and process tf files')
+    parser.add_argument('--data_dir', required=True,
+                        help='processed data directory')
     parser.add_argument('--temp_dir', required=True, help='raw data directory')
     args = parser.parse_args()
     logger = get_module_logger(__name__)
     # open the filenames file
     with open('filenames.txt', 'r') as f:
-        filenames = f.read().splitlines() 
-    logger.info(f'Download {len(filenames)} files. Be patient, this will take a long time.')
-    
+        filenames = f.read().splitlines()
+    logger.info(
+        f'Download {len(filenames)} files. Be patient, this will take a long time.')
+
     data_dir = args.data_dir
     temp_dir = args.temp_dir
     # init ray
     ray.init(num_cpus=cpu_count())
 
-    workers = [download_and_process.remote(fn, temp_dir, data_dir) for fn in filenames[:100]]
+    workers = [download_and_process.remote(
+        fn, temp_dir, data_dir) for fn in filenames[:100]]
     _ = ray.get(workers)
-
-
-
