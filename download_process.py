@@ -46,13 +46,15 @@ def create_tf_example(filename, encoded_jpeg, annotations):
     xmaxs = np.zeros(len(annotations))
     ymins = np.zeros(len(annotations))
     ymaxs = np.zeros(len(annotations))
+    # populate arrays
     for i, curr_annotation in enumerate(annotations):
         half_width = curr_annotation.box.length/2.0
         half_height = curr_annotation.box.width/2.0
-        xmins[i] = curr_annotation.box.center_x - half_width
-        xmaxs[i] = curr_annotation.box.center_x + half_width
-        ymins[i] = curr_annotation.box.center_y - half_height
-        ymaxs[i] = curr_annotation.box.center_y + half_height
+        # we need to normalize borders so that they do not exceed image size
+        xmins[i] = (curr_annotation.box.center_x - half_width)/width
+        xmaxs[i] = (curr_annotation.box.center_x + half_width)/width
+        ymins[i] = (curr_annotation.box.center_y - half_height)/height
+        ymaxs[i] = (curr_annotation.box.center_y + half_height)/height
         classes_text[i] = label_map_dict[curr_annotation.type].encode('utf-8')
         classes[i] = curr_annotation.type
 

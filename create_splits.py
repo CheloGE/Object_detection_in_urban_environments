@@ -46,6 +46,7 @@ def split(data_dir):
     os.makedirs(data_dir+"/train", exist_ok=True)
     os.makedirs(data_dir+"/val", exist_ok=True)
     os.makedirs(data_dir+"/test", exist_ok=True)
+    os.makedirs(data_dir+"/inference_video", exist_ok=True)
     DATASET_SIZE = 19802  # This number is taken from EDA analysis
     train_size = int(0.65 * DATASET_SIZE)
     val_size = int(0.15 * DATASET_SIZE)
@@ -63,7 +64,16 @@ def split(data_dir):
     train_size = tfDataset2tfrecords(train_dataset, 'train')
     test_size = tfDataset2tfrecords(test_dataset, 'test')
     val_size = tfDataset2tfrecords(val_dataset, 'val')
-    # we erase all tfrecords from processed folder
+    # we erase all tfrecords from processed folder and move
+    # some of them for inference purposes
+    os.system(
+        f'mv {data_dir}/segment-11971497357570544465_1200_000_1220_000_with_camera_labels.tfrecord {data_dir}/inference_video')
+    os.system(
+        f'mv {data_dir}/segment-10231929575853664160_1160_000_1180_000_with_camera_labels.tfrecord {data_dir}/inference_video')
+    os.system(
+        f'mv {data_dir}/segment-11070802577416161387_740_000_760_000_with_camera_labels.tfrecord {data_dir}/inference_video')
+    os.system(
+        f'mv {data_dir}/segment-10206293520369375008_2796_800_2816_800_with_camera_labels.tfrecord {data_dir}/inference_video')
     os.system(f'rm -rf {data_dir}/*.tfrecord')
 
     df = pd.DataFrame({'train': [train_size], 'test': [test_size], 'val': [val_size]},
