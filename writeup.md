@@ -115,7 +115,7 @@ You can tell that boxes are more accurate as they tend to soround the object and
 This same pattern can be observed in the [video](./animation.mp4) that we also display below as a GIF:
 
 
-<div class="wrap">
+<div class="wrap" align="center">
     <img src="./Images/video.gif" />
     <br clear="all" />
 </div>
