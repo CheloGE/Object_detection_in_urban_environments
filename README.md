@@ -2,31 +2,24 @@
 
 ## Data
 
-For this project, we will be using data from the [Waymo Open dataset](https://waymo.com/open/). The files can be downloaded directly from the website as tar files or from the [Google Cloud Bucket](https://console.cloud.google.com/storage/browser/waymo_open_dataset_v_1_2_0_individual_files/) as individual tf records. 
+For this project, we use data from the [Waymo Open dataset](https://waymo.com/open/). The files can be downloaded directly from the website as tar files or from the [Google Cloud Bucket](https://console.cloud.google.com/storage/browser/waymo_open_dataset_v_1_2_0_individual_files/) as individual tf records. 
+
+Bear in mind that you will require to request access to get the buckets in the waymo google cloud.
 
 ## Structure
 
-The data in the classroom workspace will be organized as follows:
-```
-/home/backups/
-    - raw: contained the tf records in the Waymo Open format. (NOTE: this folder only contains temporary files and should be empty after running the download and process script)
+The data for this project is organized in the following way:
 
-/home/workspace/data/
-    - processed: contained the tf records in the Tf Object detection api format. (NOTE: this folder should be empty after creating the splits)
-    - test: contain the test data
-    - train: contain the train data
-    - val: contain the val data
 ```
-
-The experiments folder will be organized as follow:
-```
+Images/
+    - All images for the writeup and for any other illustration purposes
+build/
+    - In case you want to run the project in a local computer you should use Dockerfiles inside here
 experiments/
     - exporter_main_v2.py: to create an inference model
-    - model_main_tf2.py: to launch training
-    - experiment0/....
-    - experiment1/....
-    - experiment2/...
-    - pretrained-models/: contains the checkpoints of the pretrained models.
+    - model_main_tf2.py: to launch training and evaluation of your model
+    - pretrained-models/: contains the checkpoints of the pretrained models. This folder should be downloaded using the following command:
+        `wget download.tensorflow.org/models/object_detection/tf2/20200711/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.tar.gz`
 ```
 
 ## Prerequisites
