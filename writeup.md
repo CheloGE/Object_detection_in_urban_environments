@@ -12,7 +12,7 @@ The reason to perform object detection in self-driving cars is to locate possibl
 
 In the EDA we performed some visualizations of the dataset by looking at some images from Waymo's tfrecords and the GT boxes.
 
-<p align="center"><img src=./images/EDA_1.JPG height="500"/></p>
+<p align="center"><img src=./Images/EDA_1.JPG height="500"/></p>
 
 As you can tell from above. pink boxes represent Vehicles, cyan Pedestrians and gold Cyclists.
 
