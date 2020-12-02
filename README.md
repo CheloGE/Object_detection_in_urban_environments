@@ -36,6 +36,7 @@ experiments/
 - pipeline_augmentation.config: This file contains out attempt of increasing performance of pipeline.config file through data augmentation
 - setup_google_colab.ipynb: This file is key as it contains all the dependencies for this project. This project was entirely developed inside google colab.
 - utils.py: All helper functions for the other files above.
+- writeup.md: This file contains further details on how the project was developed and all results got from it.
 ```
 
 ## Prerequisites
