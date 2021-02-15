@@ -1,12 +1,11 @@
 # Object detection project
 
 * **Author:** Marcelo Roger García
-* **Repo link:** https://github.com/CheloGE/Object_detection_in_urban_environments (Please bear in mind that this is a private repo and I don't want to make it public yet as it is a lot of work to set the environment in google colab and train it) Therefore, I will share with you the repo through [GitFront](https://console.gitfront.io/) which is a nice tool to share private repos. 
+* **Repo link:** https://github.com/CheloGE/Object_detection_in_urban_environments
 
 I'm sharing with you a log of all commits I did until now. to comply with the 5 commits threshold required in the rubric:
 
 [Log of all commits](/Images/LOG_commits.pdf)
-
 
 
 The project's goal is to train and evaluate an SSD-resnet50 model to perform Object detection and create boxes around the three following classes:
