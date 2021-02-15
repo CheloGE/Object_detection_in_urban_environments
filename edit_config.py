@@ -6,7 +6,7 @@ from google.protobuf import text_format
 from object_detection.protos import pipeline_pb2
 
 
-def edit(train_dir, eval_dir, batch_size, checkpoint, label_map, config_file):
+def edit(train_dir, eval_dir, batch_size, checkpoint, label_map, output_config, input_config):
     """
     edit the config file and save it to pipeline_new.config
     args:
@@ -17,7 +17,7 @@ def edit(train_dir, eval_dir, batch_size, checkpoint, label_map, config_file):
     - label_map [str]: path to labelmap file
     """
     pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
-    with tf.gfile.GFile(f"{config_file}.config", "r") as f:
+    with tf.gfile.GFile(f"{input_config}.config", "r") as f:
         proto_str = f.read()
         text_format.Merge(proto_str, pipeline_config)
 
@@ -33,7 +33,7 @@ def edit(train_dir, eval_dir, batch_size, checkpoint, label_map, config_file):
     pipeline_config.eval_input_reader[0].tf_record_input_reader.input_path[:] = evaluation_files
 
     config_text = text_format.MessageToString(pipeline_config)
-    with tf.gfile.Open("pipeline_new.config", "wb") as f:
+    with tf.gfile.Open(f"{output_config}.config", "wb") as f:
         f.write(config_text)
 
 
@@ -50,8 +50,11 @@ if __name__ == "__main__":
                         help='checkpoint path')
     parser.add_argument('--label_map', required=True, type=str,
                         help='label map path')
-    parser.add_argument('--config_file', default='pipeline', type=str,
+    parser.add_argument('--output_cfg_file', default='pipeline_new', type=str,
                         help='config file that we will use for training')
+    parser.add_argument('--input_cfg_file', default='pipeline', type=str,
+                        help='config file that we will use for training')
+
     args = parser.parse_args()
     edit(args.train_dir, args.eval_dir, args.batch_size,
-         args.checkpoint, args.label_map, args.config_file)
+         args.checkpoint, args.label_map, args.output_cfg_file, args.input_cfg_file)

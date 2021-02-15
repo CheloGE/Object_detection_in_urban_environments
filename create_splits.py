@@ -1,6 +1,7 @@
 import argparse
 import glob
 import os
+import shutil
 import random
 import tensorflow.compat.v1 as tf
 import numpy as np
@@ -9,26 +10,6 @@ import matplotlib.pyplot as plt
 
 
 from utils import get_module_logger
-
-
-def tfDataset2tfrecords(dataset, nameOfFolder):
-    record_every = 200
-    i = 0
-    for i, _ in dataset.enumerate():
-        i = i.numpy()
-        if i % record_every == 0:
-            if i == 0:
-                temp_ds = dataset
-            else:
-                temp_ds = temp_ds.skip(record_every)
-            recordNum = int(i/record_every+1)
-            print(
-                f"\rwritting new tfrecord {nameOfFolder} file... {recordNum}", end='', flush=True)
-            writer = tf.data.experimental.TFRecordWriter(
-                f"../data/processed/{nameOfFolder}/{nameOfFolder}-{recordNum}.tfrecord")
-            writer.write(temp_ds.take(record_every))
-    print("")
-    return i
 
 
 def split(data_dir):
@@ -41,42 +22,30 @@ def split(data_dir):
     """
     # TODO: Implement function
 
-    filenames = [
-        data_dir+filename for filename in os.listdir(data_dir) if filename.endswith(".tfrecord")]
+    # Number of tfrecords
+    train_size = 75
+    val_size = 15
+    test_size = 10
+
+    filenames = [filename for filename in os.listdir(
+        data_dir+"/processed/") if filename.endswith(".tfrecord")]
+    random.shuffle(filenames)
     os.makedirs(data_dir+"/train", exist_ok=True)
     os.makedirs(data_dir+"/val", exist_ok=True)
     os.makedirs(data_dir+"/test", exist_ok=True)
-    os.makedirs(data_dir+"/inference_video", exist_ok=True)
-    DATASET_SIZE = 19802  # This number is taken from EDA analysis
-    train_size = int(0.65 * DATASET_SIZE)
-    val_size = int(0.15 * DATASET_SIZE)
-    test_size = int(0.2 * DATASET_SIZE)
 
-    full_dataset = tf.data.TFRecordDataset(filenames)
-    # we need to set reshuffle to False because we don't want different data on each take, skip steps
-    full_dataset = full_dataset.shuffle(1000, reshuffle_each_iteration=False)
-    full_dataset = full_dataset.repeat(1)
-    train_dataset = full_dataset.take(train_size)
-    test_dataset = full_dataset.skip(train_size)
-    val_dataset = test_dataset.skip(test_size)
-    test_dataset = test_dataset.take(test_size)
+    for i, filename in enumerate(filenames):
+        if i < train_size:
+            directory = 'train'
+        elif i < train_size + val_size:
+            directory = 'val'
+        elif i <= train_size + val_size + test_size:
+            directory = 'test'
 
-    train_size = tfDataset2tfrecords(train_dataset, 'train')
-    test_size = tfDataset2tfrecords(test_dataset, 'test')
-    val_size = tfDataset2tfrecords(val_dataset, 'val')
-    # we erase all tfrecords from processed folder and move
-    # some of them for inference purposes
-    os.system(
-        f'mv {data_dir}/segment-11971497357570544465_1200_000_1220_000_with_camera_labels.tfrecord {data_dir}/inference_video')
-    os.system(
-        f'mv {data_dir}/segment-10231929575853664160_1160_000_1180_000_with_camera_labels.tfrecord {data_dir}/inference_video')
-    os.system(
-        f'mv {data_dir}/segment-11070802577416161387_740_000_760_000_with_camera_labels.tfrecord {data_dir}/inference_video')
-    os.system(
-        f'mv {data_dir}/segment-10206293520369375008_2796_800_2816_800_with_camera_labels.tfrecord {data_dir}/inference_video')
-    os.system(f'rm -rf {data_dir}/*.tfrecord')
+        shutil.move(data_dir+"/processed/"+filename,
+                    data_dir+"/"+directory+"/"+filename)
 
-    df = pd.DataFrame({'train': [train_size], 'test': [test_size], 'val': [val_size]},
+    df = pd.DataFrame({'train[tfrecords]': [train_size], 'test[tfrecords]': [test_size], 'val[tfrecords]': [val_size]},
                       index=['size'])
     print(df.to_markdown())
 
