@@ -160,6 +160,7 @@ This same pattern can be observed in the wideos shown below taken from the testi
     <br clear="all" />
 </div>
 
+
 To increase on accuracy I may require more augmentations and perhaps try to balanced the objects seen by the SSD model. Also it could be better to increase the size of the dataset by including more tfrecords from waymos google cloud buckets. Fianlly, a resnet 101 or 150 instead of the Resnet50 can be used to get better results. 
 
 Location main video: [here](./animation.mp4)
