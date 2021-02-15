@@ -81,7 +81,7 @@ However, I got the following performance from the evaluation process:
 
 You can see that the network finds out the vehicle objects mainly, This is expected as I saw in the EDA section where most of the data was from vehicle samples. However, it misclassifies some of them and the boxes are around certains features from the object and not the whole object. No pedestrians are found. 
 
-### Augmented pipeline
+## Augmented pipeline
 
 To overcome the issues found in the previous pipeline I performed more augmentations as listed below:
 
@@ -102,6 +102,11 @@ To overcome the issues found in the previous pipeline I performed more augmentat
     * probability: 0.5
     * max black patches: 15
 
+An image of the exploratory of data augmentation section is shown below:
+
+<p align="center"><img src=./Images/EDA_3.JPG height="300"/></p>
+
+For instance, in the figure above, the black boxes try to add a certain level of occlusion during the training process.
 
 
 After training the SSD-resnet on these conditions. The results of the loss in tensorboard were as follows:
